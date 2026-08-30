@@ -1,5 +1,4 @@
 import mongoose from 'mongoose';
-import { MongoMemoryServer } from 'mongodb-memory-server';
 import Product from '../models/Product.js';
 import User from '../models/User.js';
 import Order from '../models/Order.js';
@@ -219,6 +218,7 @@ const connectDB = async () => {
 
     if (!uri) {
       console.log('No MONGO_URI provided in .env. Starting MongoMemoryServer for local development...');
+      const { MongoMemoryServer } = await import('mongodb-memory-server');
       const mongod = await MongoMemoryServer.create();
       uri = mongod.getUri();
       console.log(`MongoMemoryServer started at: ${uri}`);
@@ -231,6 +231,7 @@ const connectDB = async () => {
     console.error(`MongoDB Connection Error: ${error.message}`);
     try {
       console.log('Attempting fallback to MongoMemoryServer...');
+      const { MongoMemoryServer } = await import('mongodb-memory-server');
       const mongod = await MongoMemoryServer.create();
       const fallbackUri = mongod.getUri();
       const conn = await mongoose.connect(fallbackUri);
